@@ -25,19 +25,25 @@ func _unhandled_input(event):
 		$Pivot.rotate_x(-event.relative.y * mouse_sensitivity)
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		$Pivot.rotation.x = clamp($Pivot.rotation.x, -mouse_range, mouse_range)
+		rpc_unreliable("_set_rotation", rotation.y)
 
 func die():
 	queue_free()
+	rpc_unreliable("_die")
 
 func get_input():
 	var input_dir = Vector3.ZERO
 	if Input.is_action_pressed("forward"):
 		input_dir += -camera.global_transform.basis.z
+		rpc_unreliable("_set_position", global_transform.origin)
 	if Input.is_action_pressed("back"):
 		input_dir += camera.global_transform.basis.z
+		rpc_unreliable("_set_position", global_transform.origin)
 	if Input.is_action_pressed("left"):
 		input_dir += -camera.global_transform.basis.x
+		rpc_unreliable("_set_position", global_transform.origin)
 	if Input.is_action_pressed("right"):
 		input_dir += camera.global_transform.basis.x
+		rpc_unreliable("_set_position", global_transform.origin)
 	input_dir = input_dir.normalized()
 	return input_dir
